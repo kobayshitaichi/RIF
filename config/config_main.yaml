@@ -23,4 +23,4 @@ semi : True
 iteration : 2
 makevideo : True
 remove : True
-video_name : "20221227"
+video_name : sample
