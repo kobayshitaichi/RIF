@@ -19,7 +19,6 @@ Removing irrelevant frames in plastic surgery videos using semi-supervised learn
 </p>
 
 # Getting started
-Follow these steps to get the code running on your local machine
 
 ## Prerequisites
 - ffmpegをインストール
