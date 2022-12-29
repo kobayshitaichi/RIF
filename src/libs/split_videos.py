@@ -2,6 +2,7 @@ import ffmpeg
 import pandas as pd
 import os
 from tqdm import tqdm
+import argparse
 
 
 def split(video_name, root_dir):
@@ -107,3 +108,21 @@ def split_train_data(video_name, root_dir):
         )
         stream = ffmpeg.output(stream, output_path, r=5)
         ffmpeg.run(stream)
+
+if __name__=='__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-data',help='train or test')
+    parser.add_argument('-name')
+    args = parser.parse_args()
+    data = args.data
+    name = args.name
+
+    if data == 'test':
+        split_test_data(name)
+    elif data == 'train':
+        split_train_data(name)
+    elif data == 'split':
+        split(name)
+
+    else:
+        print('-data train or test')
