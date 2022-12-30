@@ -35,11 +35,11 @@ hparams = get_config(config_path)
 root_dir = Path(hparams.root_dir)
 video_name = hparams.video_name + ".mp4"
 video_path = root_dir / "videos" / hparams.video_name / video_name
-result_dir = root_dir / "dataset" / "test" / hparams.video_name / "results"
+result_dir = root_dir / "data" / "test" / hparams.video_name / "results"
 split_dir = root_dir / "videos" / hparams.video_name / "split_videos"
-img_dir = root_dir / "dataset" / "test" / hparams.video_name / "images"
-log_dir = root_dir / "dataset" / "test" / hparams.video_name / "logs"
-label_dir = root_dir / "dataset" / "test" / hparams.video_name / "labels"
+img_dir = root_dir / "data" / "test" / hparams.video_name / "images"
+log_dir = root_dir / "data" / "test" / hparams.video_name / "logs"
+label_dir = root_dir / "data" / "test" / hparams.video_name / "labels"
 label_on_dir = label_dir / "on"
 label_off_dir = label_dir / "off"
 video_img_dir = root_dir / "makevideo" / hparams.video_name / "images"
@@ -177,7 +177,7 @@ for i in range(hparams.iteration):
 if hparams.makevideo:
     with open(
         hparams.root_dir
-        + "/dataset/test/"
+        + "/data/test/"
         + hparams.video_name
         + "/results/preds_bin_{}.pickle".format(str(hparams.iteration - 1)),
         mode="rb",

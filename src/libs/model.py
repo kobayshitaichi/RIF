@@ -70,7 +70,7 @@ class SurgeryDataset(data.Dataset):
 
     def make_filepath_list(self):
         root_dir = Path(self.hparams__.root_dir)
-        dataset_dir = root_dir / "dataset" / "train" / "images"
+        dataset_dir = root_dir / "data" / "train" / "images"
         on_dir = dataset_dir / "on"
         off_dir = dataset_dir / "off"
         num_samples = len(os.listdir(off_dir))
@@ -84,7 +84,7 @@ class SurgeryDataset(data.Dataset):
 
     def make_testfilepath_list(self):
         root_dir = Path(self.hparams__.root_dir)
-        dataset_dir = root_dir / "dataset" / "test" / "video09" / "images"
+        dataset_dir = root_dir / "data" / "test" / self.hparams__.video_name / "images"
         test_file_list = sorted(list(dataset_dir.glob("*.jpg")))
         self.file_list["test"] = test_file_list
 
@@ -123,7 +123,7 @@ class SemiSupervisedDataset(data.Dataset):
     def opt_make_train_dataset(self, i):
         with open(
             self.hparams__.root_dir
-            + "/dataset/test/"
+            + "/data/test/"
             + self.hparams__.video_name
             + "/results/opt_results.pickle",
             mode="rb",
@@ -132,26 +132,26 @@ class SemiSupervisedDataset(data.Dataset):
 
         shutil.rmtree(
             self.hparams__.root_dir
-            + "/dataset/test/"
+            + "/data/test/"
             + self.hparams__.video_name
             + "/labels/on"
         )
         shutil.rmtree(
             self.hparams__.root_dir
-            + "/dataset/test/"
+            + "/data/test/"
             + self.hparams__.video_name
             + "/labels/off"
         )
         os.makedirs(
             self.hparams__.root_dir
-            + "/dataset/test/"
+            + "/data/test/"
             + self.hparams__.video_name
             + "/labels/on",
             exist_ok=True,
         )
         os.makedirs(
             self.hparams__.root_dir
-            + "/dataset/test/"
+            + "/data/test/"
             + self.hparams__.video_name
             + "/labels/off",
             exist_ok=True,
@@ -160,7 +160,7 @@ class SemiSupervisedDataset(data.Dataset):
         if i == 0:
             with open(
                 self.hparams__.root_dir
-                + "/dataset/test/"
+                + "/data/test/"
                 + self.hparams__.video_name
                 + "/results/preds_bin.pickle",
                 mode="rb",
@@ -169,7 +169,7 @@ class SemiSupervisedDataset(data.Dataset):
         else:
             with open(
                 self.hparams__.root_dir
-                + "/dataset/test/"
+                + "/data/test/"
                 + self.hparams__.video_name
                 + "/results/preds_bin_{}.pickle".format(str(i - 1)),
                 mode="rb",
@@ -182,7 +182,7 @@ class SemiSupervisedDataset(data.Dataset):
                     shutil.copy(
                         self.file_list["test"][n],
                         self.hparams__.root_dir
-                        + "/dataset/test/"
+                        + "/data/test/"
                         + self.hparams__.video_name
                         + "/labels/on",
                     )
@@ -190,7 +190,7 @@ class SemiSupervisedDataset(data.Dataset):
                     shutil.copy(
                         self.file_list["test"][n],
                         self.hparams__.root_dir
-                        + "/dataset/test/"
+                        + "/data/test/"
                         + self.hparams__.video_name
                         + "/labels/off",
                     )
@@ -198,7 +198,7 @@ class SemiSupervisedDataset(data.Dataset):
 
     def make_filepath_list(self):
         root_dir = Path(self.hparams__.root_dir)
-        dataset_dir = root_dir / "dataset" / "test"/ self.hparams__.video_name / "labels"
+        dataset_dir = root_dir / "data" / "test"/ self.hparams__.video_name / "labels"
         on_dir = dataset_dir / "on"
         off_dir = dataset_dir / "off"
         num_samples = len(os.listdir(off_dir))
@@ -213,7 +213,7 @@ class SemiSupervisedDataset(data.Dataset):
     def make_testfilepath_list(self):
         root_dir = Path(self.hparams__.root_dir)
         dataset_dir = (
-            root_dir / "dataset" / "test" / self.hparams__.video_name / "images"
+            root_dir / "data" / "test" / self.hparams__.video_name / "images"
         )
         test_file_list = sorted(list(dataset_dir.glob("*.jpg")))
         self.file_list["test"] = test_file_list
@@ -306,7 +306,7 @@ class Net(pl.LightningModule):
 
     def test_epoch_end(self, outputs):
         save_path = (
-            Path(self.hparams__.root_dir) / "dataset" / "test" / self.video_name / "results"
+            Path(self.hparams__.root_dir) / "data" / "test" / self.video_name / "results"
         )
         save_path.mkdir(exist_ok=True)
         if self.iteration >= 0:

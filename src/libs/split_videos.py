@@ -12,7 +12,7 @@ def split(video_name, root_dir):
     stream = ffmpeg.input(path)
     stream = ffmpeg.output(
         stream,
-        root_dir + "/dataset/test/" + video_name + "/images/00000" + "_%7d_on" + ".jpg",
+        root_dir + "/data/test/" + video_name + "/images/00000" + "_%7d_on" + ".jpg",
         r=30,
     )
     ffmpeg.run(stream)
@@ -50,7 +50,7 @@ def split_test_data(video_name, root_dir):
         stream = ffmpeg.output(
             stream,
             root_dir
-            + "/dataset/test/"
+            + "/data/test/"
             + video_name
             + "/images/"
             + s.zfill(5)
@@ -96,7 +96,7 @@ def split_train_data(video_name, root_dir):
         stream = ffmpeg.input(path, f="mp4")
         output_path = (
             root_dir
-            + "/dataset/train/images/"
+            + "/data/train/images/"
             + df["onoff"][i]
             + "/"
             + video_name
