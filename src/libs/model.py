@@ -6,7 +6,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 import pickle
 from pathlib import Path
 import shutil
-
+from tqdm import tqdm
 import numpy as np
 import pytorch_lightning as pl
 import timm
@@ -116,6 +116,9 @@ class SemiSupervisedDataset(data.Dataset):
         self.hparams__ = hparams
         self.make_testfilepath_list()
         self.opt_make_train_dataset(iteration)
+        self.make_filepath_list()
+        print(self.file_list['train'][0])
+        print(self.file_list['test'][0])
 
     def opt_make_train_dataset(self, i):
         with open(
@@ -173,9 +176,7 @@ class SemiSupervisedDataset(data.Dataset):
             ) as f:
                 preds_bin = pickle.load(f)[0].tolist()
 
-        for n in range(len(opt_results)):
-            if n % 150 == 0:
-                print("make dataset {} / {}".format(n, len(opt_results)))
+        for n in tqdm(range(min(len(opt_results),len(preds_bin)))):
             if opt_results[n]:
                 if preds_bin[n] == 0:
                     shutil.copy(
@@ -185,20 +186,19 @@ class SemiSupervisedDataset(data.Dataset):
                         + self.hparams__.video_name
                         + "/labels/on",
                     )
-            else:
-                for j in range(150):
-                    if preds_bin[n] == 1:
-                        shutil.copy(
-                            self.file_list["test"][n],
-                            self.hparams__.root_dir
-                            + "/dataset/test/"
-                            + self.hparams__.video_name
-                            + "/labels/off",
-                        )
+                else:
+                    shutil.copy(
+                        self.file_list["test"][n],
+                        self.hparams__.root_dir
+                        + "/dataset/test/"
+                        + self.hparams__.video_name
+                        + "/labels/off",
+                    )
+        
 
     def make_filepath_list(self):
         root_dir = Path(self.hparams__.root_dir)
-        dataset_dir = root_dir / "dataset" / "test" / "labels"
+        dataset_dir = root_dir / "dataset" / "test"/ self.hparams__.video_name / "labels"
         on_dir = dataset_dir / "on"
         off_dir = dataset_dir / "off"
         num_samples = len(os.listdir(off_dir))
@@ -227,7 +227,7 @@ class SemiSupervisedDataset(data.Dataset):
         img = Image.open(img_path)
         img_transformed = self.transform(img, self.phase)
         if self.phase == "train" or self.phase == "valid":
-            label = str(self.file_list[self.phase][index]).split("_")[-2]
+            label = str(self.file_list[self.phase][index]).split("/")[-2]
         else:
             label = str(self.file_list[self.phase][index]).split("_")[-1][:-4]
         label = self.classes.index(label)
