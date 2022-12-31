@@ -102,79 +102,84 @@ if hparams.opt:
 
 
 # Semi-supervised learning
-for i in range(hparams.iteration):
-    logger = []
-    train_dataset = SemiSupervisedDataset(
-        hparams, i, transform=ImageTransform(hparams.input_size), phase="train"
-    )
+if hparams.semi:
+    for i in range(hparams.iteration):
+        logger = []
+        train_dataset = SemiSupervisedDataset(
+            hparams, i, transform=ImageTransform(hparams.input_size), phase="train"
+        )
 
-    valid_dataset = SemiSupervisedDataset(
-        hparams, i, transform=ImageTransform(hparams.input_size), phase="valid"
-    )
+        valid_dataset = SemiSupervisedDataset(
+            hparams, i, transform=ImageTransform(hparams.input_size), phase="valid"
+        )
 
-    test_dataset = SemiSupervisedDataset(
-        hparams, i, transform=ImageTransform(hparams.input_size), phase="test"
-    )
+        test_dataset = SemiSupervisedDataset(
+            hparams, i, transform=ImageTransform(hparams.input_size), phase="test"
+        )
 
-    train_dataloader = data.DataLoader(
-        train_dataset,
-        batch_size=hparams.batch_size,
-        num_workers=hparams.num_workers,
-        shuffle=True,
-        pin_memory=True,
-    )
+        train_dataloader = data.DataLoader(
+            train_dataset,
+            batch_size=hparams.batch_size,
+            num_workers=hparams.num_workers,
+            shuffle=True,
+            pin_memory=True,
+        )
 
-    valid_dataloader = data.DataLoader(
-        valid_dataset,
-        batch_size=hparams.batch_size,
-        num_workers=hparams.num_workers,
-        shuffle=True,
-        pin_memory=True,
-    )
+        valid_dataloader = data.DataLoader(
+            valid_dataset,
+            batch_size=hparams.batch_size,
+            num_workers=hparams.num_workers,
+            shuffle=True,
+            pin_memory=True,
+        )
 
-    test_dataloader = data.DataLoader(
-        test_dataset,
-        batch_size=hparams.batch_size,
-        num_workers=hparams.num_workers,
-        shuffle=False,
-        pin_memory=True,
-    )
+        test_dataloader = data.DataLoader(
+            test_dataset,
+            batch_size=hparams.batch_size,
+            num_workers=hparams.num_workers,
+            shuffle=False,
+            pin_memory=True,
+        )
 
-    net = Net(hparams, iteration=i, video_name=hparams.video_name)
-    early_stop_callback = EarlyStopping(
-        monitor=hparams.early_stopping_metric, min_delta=0.00, patience=3, mode="min"
-    )
+        net = Net(hparams, iteration=i, video_name=hparams.video_name)
+        early_stop_callback = EarlyStopping(
+            monitor=hparams.early_stopping_metric, min_delta=0.00, patience=3, mode="min"
+        )
 
-    trainer = pl.Trainer(
-        fast_dev_run=False,
-        auto_lr_find=False,
-        max_epochs=hparams.max_epocks,
-        min_epochs=hparams.min_epocks,
-        logger=logger,
-        callbacks=[early_stop_callback],
-        accelerator="gpu",
-        devices=hparams.gpus,
-    )
+        trainer = pl.Trainer(
+            fast_dev_run=False,
+            auto_lr_find=False,
+            max_epochs=hparams.max_epocks,
+            min_epochs=hparams.min_epocks,
+            logger=logger,
+            callbacks=[early_stop_callback],
+            accelerator="gpu",
+            devices=hparams.gpus,
+        )
 
-    lr_finder = trainer.tuner.lr_find(
-        net,
-        train_dataloaders=train_dataloader,
-        val_dataloaders=valid_dataloader,
-        method="fit",
-    )
+        lr_finder = trainer.tuner.lr_find(
+            net,
+            train_dataloaders=train_dataloader,
+            val_dataloaders=valid_dataloader,
+            method="fit",
+        )
 
-    fig = lr_finder.plot(suggest=True)
-    net.lr = lr_finder.suggestion()
+        fig = lr_finder.plot(suggest=True)
+        net.lr = lr_finder.suggestion()
 
-    trainer.fit(
-        net,
-        train_dataloaders=train_dataloader,
-        val_dataloaders=valid_dataloader,
-    )
-    trainer.test(net, dataloaders=test_dataloader)
+        trainer.fit(
+            net,
+            train_dataloaders=train_dataloader,
+            val_dataloaders=valid_dataloader,
+        )
+        trainer.test(net, dataloaders=test_dataloader)
 
 # Make video
 if hparams.makevideo:
+    if not hparams.semi:
+        test_dataset = SemiSupervisedDataset(
+            hparams, 0, transform=ImageTransform(hparams.input_size), phase="test"
+        )
     with open(
         hparams.root_dir
         + "/data/test/"
@@ -182,7 +187,7 @@ if hparams.makevideo:
         + "/results/preds_bin_{}.pickle".format(str(hparams.iteration - 1)),
         mode="rb",
     ) as f:
-        preds_bin = pickle.load(f).tolist()
+        preds_bin = pickle.load(f)[0].tolist()
     path_list = test_dataset.file_list["test"]
     video_path = []
     for i in range(len(path_list)):

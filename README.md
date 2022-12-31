@@ -23,6 +23,7 @@ Removing irrelevant frames in plastic surgery videos using semi-supervised learn
 ## Prerequisites
 - ffmpegをインストール
 - [wandb](https://wandb.ai/site)のアカウントを作成
+- 環境にあったバージョンの[pytorch](https://pytorch.org/get-started/locally/)をインストール
 - 以下のコードを実行
 
 ```

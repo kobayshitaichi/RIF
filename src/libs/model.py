@@ -314,8 +314,6 @@ class Net(pl.LightningModule):
             save_path_vid = save_path / save
         else:
             save_path_vid = save_path / "preds_bin.pickle"
-        save_path_vid = save_path / "preds_bin.pickle"
-        print(len(self.current_preds))
         with open(save_path_vid, "wb") as f:
             pickle.dump(
                 [
