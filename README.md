@@ -36,7 +36,7 @@ pip install -r requirements.txt
 元動画はvideosの下に動画名と同じ名前のディレクトリを作成し、その下に保存する
 
 ### - 術野がフレームを除去した動画を作成する
-config/config_main.yaml のvideo_nameを変更し、以下のコードを実行
+config/config_main.yaml のvideo_nameを変更し、以下のコードを実行。makevideoディレクトリに動画が作成される。
 
 ```
 python main.py 
