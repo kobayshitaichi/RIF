@@ -22,7 +22,6 @@ Removing irrelevant frames in plastic surgery videos using semi-supervised learn
 
 ## Prerequisites
 - ffmpegをインストール
-- [wandb](https://wandb.ai/site)のアカウントを作成
 - 環境にあったバージョンの[pytorch](https://pytorch.org/get-started/locally/)をインストール
 - 以下のコードを実行
 
@@ -43,7 +42,7 @@ config/config_main.yaml のvideo_nameを変更し、以下のコードを実行
 python main.py 
 ```
 ### - Train model
-動画からTrain or Testデータを作る場合：
+アノテーション済み動画からTrain or Testデータを作る場合：
 ```
 
 python src/utils/split_videos.py -data train(test) -name [videoname]

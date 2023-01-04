@@ -12,7 +12,7 @@ max_epocks : 15
 min_epocks : 10
 gpus : [0]
 output_path : str
-name : train_model
+name : resnet_50
 wandb : True
 train : True
 log_every_n_steps : 4

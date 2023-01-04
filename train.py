@@ -64,7 +64,7 @@ test_dataloader = data.DataLoader(
 
 net = Net(hparams, video_name=hparams.video_name)
 early_stop_callback = EarlyStopping(
-    monitor=hparams.early_stopping_metric, min_delta=0.00, patience=3, mode="min"
+    monitor=hparams.early_stopping_metric, min_delta=0.00, patience=5, mode="min"
 )
 
 trainer = pl.Trainer(
@@ -99,5 +99,5 @@ if hparams.train:
     torch.save(net.state_dict(), hparams.root_dir + "/models/" + hparams.name + ".pth")
     trainer.test(net, dataloaders=test_dataloader)
 else:
-    net.load_state_dict(torch.load(hparams.root_dir + "/models/" + "resnet_0" + ".pth"))
+    net.load_state_dict(torch.load(hparams.root_dir + "/models/" + "resnet_50" + ".pth"))
     trainer.test(net, dataloaders=test_dataloader)
