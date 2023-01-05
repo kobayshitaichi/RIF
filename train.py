@@ -99,5 +99,5 @@ if hparams.train:
     torch.save(net.state_dict(), hparams.root_dir + "/models/" + hparams.name + ".pth")
     trainer.test(net, dataloaders=test_dataloader)
 else:
-    net.load_state_dict(torch.load(hparams.root_dir + "/models/" + "resnet_50" + ".pth"))
+    net.load_state_dict(torch.load(hparams.root_dir + "/models/" + hparams.name+ ".pth"))
     trainer.test(net, dataloaders=test_dataloader)
