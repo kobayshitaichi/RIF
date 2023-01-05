@@ -186,7 +186,8 @@ class SemiSupervisedDataset(data.Dataset):
                         + self.hparams__.video_name
                         + "/labels/on",
                     )
-                else:
+            else:
+                if preds_bin[n] == 1:
                     shutil.copy(
                         self.file_list["test"][n],
                         self.hparams__.root_dir
