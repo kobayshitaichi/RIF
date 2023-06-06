@@ -304,7 +304,7 @@ class Net(pl.LightningModule):
         y_pred = torch.argmax(y_hat, dim=1).cpu().numpy()
         self.current_preds.extend(np.asarray(y_pred).tolist())
 
-    def test_epoch_end(self, outputs):
+    def on_test_epoch_end(self):
         save_path = (
             Path(self.hparams__.root_dir) / "data" / "test" / self.video_name / "results"
         )
@@ -314,8 +314,6 @@ class Net(pl.LightningModule):
             save_path_vid = save_path / save
         else:
             save_path_vid = save_path / "preds_bin.pickle"
-        save_path_vid = save_path / "preds_bin.pickle"
-        print(len(self.current_preds))
         with open(save_path_vid, "wb") as f:
             pickle.dump(
                 [

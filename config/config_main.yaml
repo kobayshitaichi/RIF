@@ -1,4 +1,4 @@
-root_dir : /media/aolab/untitiled/workspace/RIF
+root_dir : ./
 model_name : resnet50
 batch_size : 64
 num_workers : 16
@@ -8,8 +8,8 @@ out_features : 2
 learning_rate : 0.003
 early_stopping_metric : val_loss
 pretrained : True
-max_epocks : 15
-min_epocks : 10
+max_epocks : 10
+min_epocks : 2
 gpus : [0]
 output_path : str
 name : main
@@ -22,5 +22,5 @@ opt : True
 semi : True
 iteration : 2
 makevideo : True
-remove : True
+remove : False
 video_name : sample

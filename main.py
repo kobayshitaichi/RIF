@@ -73,7 +73,6 @@ if hparams.test:
     net = Net(hparams, video_name=hparams.video_name)
     trainer = pl.Trainer(
         fast_dev_run=False,
-        auto_lr_find=False,
         max_epochs=hparams.max_epocks,
         min_epochs=hparams.min_epocks,
         accelerator="gpu",
@@ -147,7 +146,6 @@ for i in range(hparams.iteration):
 
     trainer = pl.Trainer(
         fast_dev_run=False,
-        auto_lr_find=False,
         max_epochs=hparams.max_epocks,
         min_epochs=hparams.min_epocks,
         logger=logger,
@@ -156,15 +154,6 @@ for i in range(hparams.iteration):
         devices=hparams.gpus,
     )
 
-    lr_finder = trainer.tuner.lr_find(
-        net,
-        train_dataloaders=train_dataloader,
-        val_dataloaders=valid_dataloader,
-        method="fit",
-    )
-
-    fig = lr_finder.plot(suggest=True)
-    net.lr = lr_finder.suggestion()
 
     trainer.fit(
         net,
@@ -182,11 +171,11 @@ if hparams.makevideo:
         + "/results/preds_bin_{}.pickle".format(str(hparams.iteration - 1)),
         mode="rb",
     ) as f:
-        preds_bin = pickle.load(f).tolist()
+        preds_bin = pickle.load(f)[0].tolist()
     path_list = test_dataset.file_list["test"]
     video_path = []
     for i in range(len(path_list)):
-        if preds_bin[i] == 0:
+        if preds_bin[i] == 1:
             video_path.append(path_list[i])
 
     for i in range(len(video_path)):
